@@ -23,5 +23,9 @@ pip3 install -r requirements.txt
 ```
 python3 main.py
 ```
+### Screenshot:
+
+![Screenshot_20220611_180803](https://user-images.githubusercontent.com/46352760/173204915-cfe17d55-ef48-4276-ac15-90c00f761af8.png)
+
 
 feito com amor.
