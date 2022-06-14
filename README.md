@@ -31,7 +31,7 @@ python3 main.py
 
 Favor criar uma issue documentando as alterações sugeridas antes de criar um pull request, linkar o PR à issue, preferencialmente utilizar nomes de branch com o seguinte padrao:
 
-<numero da issue>/<tipo de alteração>-<descrição da issue>
+\<numero da issue>/<tipo de alteração>-<descrição da issue>
   
   EX: 001/Hotfix-correcao-tabela-principal
   
