@@ -27,5 +27,18 @@ python3 main.py
 
 ![Screenshot_20220611_180803](https://user-images.githubusercontent.com/46352760/173204915-cfe17d55-ef48-4276-ac15-90c00f761af8.png)
 
+## Contribuição:
 
-feito com amor.
+Favor criar uma issue documentando as alterações sugeridas antes de criar um pull request, linkar o PR à issue, preferencialmente utilizar nomes de branch com o seguinte padrao:
+
+<numero da issue>/<tipo de alteração>-<descrição da issue>
+  
+  EX: 001/Hotfix-correcao-tabela-principal
+  
+  Utilizar os tipos [Feature|Hotfix|Update]
+  
+  Qualquer duvida ou sugestão, sinta-se a vontade para abrir uma nova issue, assim temos espaço para discutir as alterações/duvidas
+
+
+Made with 💛 by the community
+
