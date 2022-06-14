@@ -6,16 +6,29 @@ from rich.console import group
 from rich.markdown import Markdown
 from requests import get
 from textual.app import App
-from textual.widgets import ScrollView
+from textual.widgets import ScrollView, Button, ButtonPressed
 from textual.widget import Widget
 from textual.reactive import Reactive
+
 
 API_URL = "https://www.tabnews.com.br/api/v1/"
 POSTS_PER_PAGE = 30
 
+post_page = Reactive(1)
 post_page = 1
+open_post = Reactive(1)
+open_post = 1
+
 console = Console()
 layout = Layout()
+
+
+def watch_post_page(self, val):
+    return False 
+
+
+def watch_open_post(self, val):
+    return False
 
 
 def get_url(append):
@@ -30,24 +43,39 @@ def get_posts(page):
     return response
 
 
-def post_layout(post, padding=1):
-    content = f'[bold]{post["title"]}  [/bold]\n\
-[#0969da on #333333] {post["username"]} [/#0969da on #333333]'
+def post_header_layout(post, padding=None):
+    if not padding:
+        padding = 1
 
-    return panel(content, padding=padding, expand=True)
+    content = f'[bold]{post["title"]}  [/bold]\n\n\
+[#0969da on #333333] {post["username"]} [/#0969da on #333333]\n\n'
+
+    return content
 
 
-def get_first_post():
-    return get_posts(1)[0]
+def post_body(post):
+    content = Markdown(post["body"])
+    return panel(content, border_style="#333344", padding=1)
 
 
-post_shown = post_layout(get_first_post(), padding=1)
+def shown_post():
+    print(post_page)
+    return get_posts(post_page)[open_post]
+
+
+post_shown_header = panel(post_header_layout(shown_post()), padding=(0, 1), border_style="#333344")
+post_shown_body = post_body(shown_post())
+
+
+def set_post(number):
+    global open_post
+    open_post = number
 
 
 @group()
 def feed_layout(page):
     for post in get_posts(page):
-        yield post_layout(post)
+        yield post_header_layout(post)
 
 
 class Header(Widget, Table):
@@ -55,26 +83,34 @@ class Header(Widget, Table):
         table = Table.grid(padding=(0, 1), expand=True)
         table.add_column("app", justify="left", ratio=0, width=10)
         table.add_column("creator", justify="right", width=20)
-        table.add_row("CliNews", "Criado por Eduardo-moro [finn]")
+        table.add_row("📁[bold cyan]CliNews", "Criado por Eduardo-moro [finn]")
 
         header: RenderableType
-        header = panel(table)
+        header = panel(table, border_style="bold cyan")
 
-
-        return table
+        return header
 
 
 class Feed(Widget):
-    mouse_over = Reactive(False)
-
     def render(self) -> panel:
-        return panel(feed_layout(post_page), border_style=("white" if self.mouse_over else "black"))
+        return feed_layout(post_page)
 
-    def on_enter(self) -> None:
-        self.mouse_over = True
 
-    def on_leave(self) -> None:
-        self.mouse_over = False
+class MainLayout(Widget):
+    def render(self) -> RenderableType:
+        grid = Layout()
+
+        grid.split_row(
+            Layout(name="post"),
+            Layout(panel(Feed(), border_style="#333344"))
+        )
+
+        grid["post"].split_column(
+            Layout(post_shown_header, size=6, ratio=1),
+            Layout(post_shown_body),
+        )
+
+        return(grid)
 
 
 class CliNews(App):
@@ -82,24 +118,9 @@ class CliNews(App):
         await self.bind('q', 'quit', 'sair')
 
     async def on_mount(self) -> None:
+        self.body = ScrollView(gutter=1)
         await self.view.dock(Header(), edge="top", size=3)
-        grid = await self.view.dock_grid(edge="left")
-
-        grid.add_column(fraction=3, name="post", min_size=60)
-        grid.add_column(fraction=1, name="feed")
-
-        grid.add_row(fraction=1, name="main")
-        grid.add_row(fraction=2, name="content")
-
-        grid.add_areas(
-            post="post, main",
-            feed="feed, main"
-        )
-
-        grid.place(
-            post=ScrollView(post_shown),
-            feed=ScrollView(Feed())
-        )
+        await self.view.dock(ScrollView(MainLayout()), edge="left")
 
 
 CliNews.run(log="textual.log")
