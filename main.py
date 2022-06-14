@@ -88,8 +88,8 @@ class CliNews(App):
         grid.add_column(fraction=3, name="post", min_size=60)
         grid.add_column(fraction=1, name="feed")
 
-        grid.add_row(fraction=1, name="main")
-        grid.add_row(fraction=2, name="content")
+        grid.add_row(fraction=1, name="main", min_size=30)
+        grid.add_row(fraction=2, name="content", min_size=70)
 
         grid.add_areas(
             post="post, main",
