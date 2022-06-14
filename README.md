@@ -39,6 +39,7 @@ Favor criar uma issue documentando as alterações sugeridas antes de criar um p
   
   Qualquer duvida ou sugestão, sinta-se a vontade para abrir uma nova issue, assim temos espaço para discutir as alterações/duvidas
 
+____
 
-Made with 💛 by the community
+<p align="right">Made with 💛 by the community</p>
 
