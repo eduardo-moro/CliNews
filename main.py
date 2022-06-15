@@ -120,24 +120,6 @@ class CliNews(App):
     async def on_mount(self) -> None:
         self.body = ScrollView(gutter=1)
         await self.view.dock(Header(), edge="top", size=3)
-        grid = await self.view.dock_grid(edge="left")
-
-        grid.add_column(fraction=3, name="post", min_size=60)
-        grid.add_column(fraction=1, name="feed")
-
-        grid.add_row(fraction=1, name="main", min_size=30)
-        grid.add_row(fraction=2, name="content", min_size=70)
-
-        grid.add_areas(
-            post="post, main",
-            feed="feed, main"
-        )
-
-        grid.place(
-            post=ScrollView(post_shown),
-            feed=ScrollView(Feed())
-        )
         await self.view.dock(ScrollView(MainLayout()), edge="left")
-
 
 CliNews.run(log="textual.log")
