@@ -5,8 +5,8 @@ from rich.console import Console, RenderableType
 from rich.console import group
 from rich.markdown import Markdown
 from requests import get
-from textual.app import App
-from textual.widgets import ScrollView, Button, ButtonPressed
+from textual.app import App, ComposeResult
+from textual.widgets import Button
 from textual.widget import Widget
 from textual.reactive import Reactive
 
@@ -48,18 +48,17 @@ def post_header_layout(post, padding=None):
         padding = 1
 
     content = f'[bold]{post["title"]}  [/bold]\n\n\
-[#0969da on #333333] {post["username"]} [/#0969da on #333333]\n\n'
+[#0969da on #333333] {post["owner_username"]} [/#0969da on #333333]\n\n'
 
     return content
 
 
 def post_body(post):
-    content = Markdown(post["body"])
+    content = Markdown(post["title"])
     return panel(content, border_style="#333344", padding=1)
 
 
 def shown_post():
-    print(post_page)
     return get_posts(post_page)[open_post]
 
 
@@ -115,12 +114,13 @@ class MainLayout(Widget):
 
 class CliNews(App):
     async def on_load(self) -> None:
-        await self.bind('q', 'quit', 'sair')
-
+        self.bind('q', 'quit')
+    
     async def on_mount(self) -> None:
-        self.body = ScrollView(gutter=1)
         await self.view.dock(Header(), edge="top", size=3)
-        await self.view.dock(ScrollView(MainLayout()), edge="left")
+        await self.view.dock(MainLayout(), edge="left")
 
+if __name__ == "__main__":
+    app = CliNews()
+    app.run()
 
-CliNews.run(log="textual.log")
